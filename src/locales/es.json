@@ -1,0 +1,32 @@
+{
+  "login": {
+    "title": "Bienvenido de nuevo",
+    "subtitle": "Ingresa a tu cuenta de Intiva",
+    "emailLabel": "Correo electrónico",
+    "emailPlaceholder": "usuario{'@'}ejemplo.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "rememberMe": "Recuérdame",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "signInButton": "Iniciar Sesión",
+    "orContinueWith": "O iniciar sesión con",
+    "googleButton": "Google",
+    "noAccount": "¿No tienes una cuenta?",
+    "register": "Regístrate",
+    "errors": {
+      "emailRequired": "El correo electrónico es obligatorio.",
+      "emailInvalid": "Ingresa un correo electrónico válido.",
+      "passwordRequired": "La contraseña es obligatoria.",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres.",
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "serverError": "Ocurrió un error. Intenta nuevamente."
+    },
+    "leftPanel": {
+      "tagline": "Gestiona tus finanzas",
+      "taglineHighlight": "familiares con precisión.",
+      "description": "Controla tus gastos, ingresos y metas de ahorro en un solo lugar."
+    },
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad"
+  }
+}
