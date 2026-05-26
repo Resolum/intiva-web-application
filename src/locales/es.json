@@ -28,5 +28,112 @@
     },
     "terms": "Términos y Condiciones",
     "privacy": "Política de Privacidad"
+  },
+  "app": {
+    "name": "Intiva",
+    "subtitle": "Finanzas Familiares"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "reports": "Reportes"
+  },
+  "header": {
+    "downloadReport": "Descargar Reporte",
+    "filters": "Filtros",
+    "switchLanguage": "Cambiar idioma",
+    "toggleTheme": "Cambiar tema",
+    "lightMode": "Modo claro",
+    "darkMode": "Modo oscuro"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalBalance": "Balance Total",
+    "monthlyIncome": "Ingresos del Mes",
+    "monthlyExpenses": "Gastos del Mes",
+    "netSavings": "Ahorro Neto",
+    "balanceEvolution": "Evolución del Balance",
+    "expensesByCategory": "Gastos por Categoría",
+    "incomeVsExpenses": "Ingresos vs Gastos",
+    "savingsGoalsProgress": "Progreso de Metas de Ahorro",
+    "recentAlerts": "Alertas Recientes",
+    "total": "Total"
+  },
+  "timeRange": {
+    "oneMonth": "1M",
+    "sixMonths": "6M",
+    "oneYear": "1Y"
+  },
+  "alerts": {
+    "budgetAlert": "Alerta de Presupuesto",
+    "savingsMilestone": "Meta de Ahorro",
+    "sharedExpense": "Gasto Compartido",
+    "budgetAlertDesc": "El presupuesto de entretenimiento superó el 15% este mes.",
+    "savingsMilestoneDesc": "¡Alcanzaste el 90% de tu meta de Vacaciones!",
+    "sharedExpenseDesc": "Se agregó una nueva factura de servicios a los gastos compartidos."
+  },
+  "goals": {
+    "vacations": "Vacaciones",
+    "newCar": "Auto Nuevo",
+    "emergencyFund": "Fondo de Emergencia"
+  },
+  "months": {
+    "jan": "Ene", "feb": "Feb", "mar": "Mar", "apr": "Abr",
+    "may": "May", "jun": "Jun", "jul": "Jul", "aug": "Ago",
+    "sep": "Sep", "oct": "Oct", "nov": "Nov", "dec": "Dic"
+  },
+  "categories": {
+    "food": "Alimentación",
+    "rent": "Alquiler",
+    "transport": "Transporte",
+    "entertainment": "Entretenimiento",
+    "health": "Salud"
+  },
+  "plan": { "premium": "Plan Premium" },
+  "logout": "Cerrar sesión",
+  "currency": { "symbol": "S/", "code": "PEN" },
+  "reports": {
+    "title": "Generador de Reportes",
+    "config": {
+      "title": "Configuración",
+      "reportType": "Tipo de Reporte",
+      "types": {
+        "general": "General",
+        "income": "Ingresos",
+        "expenses": "Gastos",
+        "savings": "Ahorros"
+      },
+      "period": "Período",
+      "members": "Miembros Incluidos",
+      "addMember": "Agregar miembro",
+      "format": "Formato de Exportación",
+      "formats": { "pdf": "PDF", "csv": "CSV" },
+      "generateButton": "Generar & Descargar"
+    },
+    "preview": {
+      "label": "Vista Previa del Documento",
+      "title": "Resumen Financiero Familiar",
+      "generatedBy": "Generado:",
+      "totalIncome": "Ingresos Totales",
+      "totalExpenses": "Gastos Totales",
+      "netSavings": "Ahorro Neto",
+      "expenseChart": "Distribución de Gastos",
+      "topTransactions": "Transacciones Principales",
+      "columns": {
+        "date": "Fecha",
+        "description": "Descripción",
+        "category": "Categoría",
+        "amount": "Monto"
+      }
+    },
+    "topbar": {
+      "filters": "Filtros",
+      "download": "Descargar Reporte"
+    },
+    "errors": {
+      "loadFailed": "Error al cargar los datos del reporte.",
+      "generateFailed": "Error al generar el reporte. Intenta nuevamente.",
+      "noMembers": "Debes seleccionar al menos un miembro.",
+      "invalidPeriod": "El período seleccionado no es válido."
+    }
   }
 }
