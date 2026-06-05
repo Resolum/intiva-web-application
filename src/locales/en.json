@@ -1,0 +1,145 @@
+{
+  "login": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your Intiva account",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "user{'@'}example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "signInButton": "Sign In",
+    "orContinueWith": "Or continue with",
+    "googleButton": "Google",
+    "noAccount": "Don't have an account?",
+    "register": "Sign up",
+    "errors": {
+      "emailRequired": "Email address is required.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordRequired": "Password is required.",
+      "passwordMinLength": "Password must be at least 8 characters.",
+      "invalidCredentials": "Invalid email or password.",
+      "serverError": "Something went wrong. Please try again."
+    },
+    "leftPanel": {
+      "tagline": "Manage your family",
+      "taglineHighlight": "finances with precision.",
+      "description": "Track your expenses, income and savings goals all in one place."
+    },
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy"
+  },
+  "app": {
+    "name": "Intiva",
+    "subtitle": "Family Finance"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "reports": "Reports"
+  },
+  "header": {
+    "downloadReport": "Download Report",
+    "filters": "Filters",
+    "switchLanguage": "Switch language",
+    "toggleTheme": "Toggle theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "notifications": "Notifications",
+    "noNotifications": "You're all caught up, no notifications.",
+    "markAllRead": "Mark all as read",
+    "calendar": "Calendar",
+    "help": "Help"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalBalance": "Total Balance",
+    "monthlyIncome": "Monthly Income",
+    "monthlyExpenses": "Monthly Expenses",
+    "netSavings": "Net Savings",
+    "balanceEvolution": "Balance Evolution",
+    "expensesByCategory": "Expenses by Category",
+    "incomeVsExpenses": "Income vs Expenses",
+    "savingsGoalsProgress": "Savings Goals Progress",
+    "recentAlerts": "Recent Alerts",
+    "total": "Total"
+  },
+  "timeRange": {
+    "oneMonth": "1M",
+    "sixMonths": "6M",
+    "oneYear": "1Y"
+  },
+  "alerts": {
+    "budgetAlert": "Budget Alert",
+    "savingsMilestone": "Savings Milestone",
+    "sharedExpense": "Shared Expense",
+    "budgetAlertDesc": "Entertainment budget exceeded by 15% this month.",
+    "savingsMilestoneDesc": "You reached 90% of your Vacations goal!",
+    "sharedExpenseDesc": "New utility bill added to shared expenses."
+  },
+  "goals": {
+    "vacations": "Vacations",
+    "newCar": "New Car",
+    "emergencyFund": "Emergency Fund"
+  },
+  "months": {
+    "jan": "Jan", "feb": "Feb", "mar": "Mar", "apr": "Apr",
+    "may": "May", "jun": "Jun", "jul": "Jul", "aug": "Aug",
+    "sep": "Sep", "oct": "Oct", "nov": "Nov", "dec": "Dec"
+  },
+  "categories": {
+    "food": "Food",
+    "rent": "Rent",
+    "transport": "Transport",
+    "entertainment": "Entertainment",
+    "health": "Health"
+  },
+  "plan": { "premium": "Premium Plan" },
+  "logout": "Sign out",
+  "currency": { "symbol": "S/", "code": "PEN" },
+  "reports": {
+    "title": "Report Generator",
+    "config": {
+      "title": "Configuration",
+      "reportType": "Report Type",
+      "types": {
+        "general": "General",
+        "income": "Income",
+        "expenses": "Expenses",
+        "savings": "Savings"
+      },
+      "period": "Period",
+      "members": "Included Members",
+      "addMember": "Add member",
+      "format": "Export Format",
+      "formats": { "pdf": "PDF", "csv": "CSV" },
+      "generateButton": "Generate & Download"
+    },
+    "preview": {
+      "label": "Document Preview",
+      "title": "Family Financial Summary",
+      "generatedBy": "Generated:",
+      "totalIncome": "Total Income",
+      "totalExpenses": "Total Expenses",
+      "netSavings": "Net Savings",
+      "expenseChart": "Expense Distribution",
+      "topTransactions": "Top Transactions",
+      "noData": "Configure and generate a report to preview it here",
+      "columns": {
+        "date": "Date",
+        "description": "Description",
+        "category": "Category",
+        "amount": "Amount"
+      }
+    },
+    "topbar": {
+      "filters": "Filters",
+      "download": "Download Report"
+    },
+    "errors": {
+      "loadFailed": "Failed to load report data.",
+      "generateFailed": "Failed to generate report. Please try again.",
+      "noMembers": "You must select at least one member.",
+      "invalidPeriod": "The selected period is not valid."
+    }
+  }
+}
