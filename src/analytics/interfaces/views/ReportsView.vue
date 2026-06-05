@@ -93,26 +93,28 @@ const onGenerate = async () => {
 
 <style scoped>
 .reports-body {
-  padding: 1.5rem;
+  padding: 0.75rem;
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .reports-layout {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 1rem;
   flex: 1;
-  height: calc(100vh - var(--header-height, 64px) - 3rem);
 }
 
 .config-panel {
-  width: 380px;
-  flex-shrink: 0;
+  width: 100%;
 }
 
 .preview-panel {
-  flex: 1;
+  width: 100%;
+  min-height: 400px;
   background: transparent;
   position: relative;
   overflow: hidden;
@@ -125,5 +127,38 @@ const onGenerate = async () => {
   align-items: center;
   justify-content: center;
   color: var(--color-primary);
+}
+
+@media (max-width: 1023px) {
+  .reports-layout {
+    flex-direction: column;
+  }
+
+  .config-panel {
+    width: 100%;
+  }
+
+  .preview-panel {
+    width: 100%;
+    min-height: 500px;
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reports-body {
+    padding: 1.5rem;
+  }
+  .reports-layout {
+    flex-direction: row;
+    height: calc(100vh - var(--header-height, 64px) - 3rem);
+  }
+  .config-panel {
+    width: 380px;
+    flex-shrink: 0;
+  }
+  .preview-panel {
+    flex: 1;
+  }
 }
 </style>

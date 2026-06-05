@@ -49,14 +49,16 @@ const trendLabel = computed(() => {
   border: 0.5px solid var(--border-color);
   border-left: 3px solid var(--color-primary);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 0.75rem 1rem;
   box-shadow: var(--shadow-card);
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
   animation: slideUpFade 0.5s ease forwards;
   animation-delay: var(--card-delay);
   will-change: transform;
+  width: 100%;
+  min-width: 0;
 }
 @keyframes slideUpFade {
   from {
@@ -79,15 +81,15 @@ const trendLabel = computed(() => {
   transform: rotate(5deg);
 }
 .metric-icon-wrap {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   color: var(--color-primary);
 }
 .metric-icon-wrap i {
@@ -106,19 +108,23 @@ const trendLabel = computed(() => {
   letter-spacing: 0.08em;
   color: var(--text-muted);
   font-weight: 500;
+  white-space: normal;
+  line-height: 1.2;
+  opacity: 0.7;
 }
 .metric-value {
-  font-size: 2rem;
+  font-size: clamp(1.2rem, 6vw, 1.8rem);
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .metric-trend {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
@@ -141,6 +147,15 @@ const trendLabel = computed(() => {
 }
 [data-theme="light"] .metric-trend.up {
   color: #6a7a00;
+}
+
+@media (max-width: 767px) {
+  .metric-icon-wrap {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    font-size: 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

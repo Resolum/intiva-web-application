@@ -24,14 +24,47 @@ const { t } = useI18n()
 const chartRef     = ref(null)
 const cardRef      = ref(null)
 const showDownload = ref(false)
-const containerHeight = ref(300)
+const containerHeight = ref(200)
+const isMobile     = ref(window.innerWidth < 768)
 
 function updateHeight() {
   const w = window.innerWidth
+  isMobile.value = w < 768
   if (w < 768) containerHeight.value = 200
   else if (w < 1024) containerHeight.value = 250
   else containerHeight.value = 300
 }
+
+const chartOptions = computed(() => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: { label: (ctx) => ` S/ ${ctx.parsed.y.toLocaleString('es-PE')}` }
+    }
+  },
+  scales: {
+    x: {
+      grid: { color: 'rgba(83,74,183,0.15)' },
+      ticks: {
+        color: '#888780',
+        font: { size: isMobile.value ? 9 : 11 },
+        maxRotation: 0,
+        maxTicksLimit: isMobile.value ? 5 : undefined,
+      },
+    },
+    y: {
+      grid: { color: 'rgba(83,74,183,0.15)' },
+      ticks: {
+        color: '#888780',
+        font: { size: isMobile.value ? 9 : 11 },
+        callback: (v) => `S/ ${v.toLocaleString('es-PE')}`,
+        maxTicksLimit: isMobile.value ? 5 : undefined,
+      },
+    }
+  }
+}))
 
 let resizeObserver = null
 
@@ -59,31 +92,6 @@ const chartData = computed(() => ({
     pointHoverBorderColor: '#CDEB45',
   }]
 }))
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      callbacks: { label: (ctx) => ` S/ ${ctx.parsed.y.toLocaleString('es-PE')}` }
-    }
-  },
-  scales: {
-    x: {
-      grid: { color: 'rgba(83,74,183,0.15)' },
-      ticks: { color: '#888780', font: { size: 11 } },
-    },
-    y: {
-      grid: { color: 'rgba(83,74,183,0.15)' },
-      ticks: {
-        color: '#888780',
-        font: { size: 11 },
-        callback: (v) => `S/ ${v.toLocaleString('es-PE')}`,
-      },
-    }
-  }
-}
 
 /** Captures the card element. Must be called before closing the dropdown. */
 async function captureCard() {
@@ -174,10 +182,12 @@ onUnmounted(() => {
   background: var(--bg-card);
   border: 0.5px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
+  padding: 1rem;
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Neon accent top bar */
@@ -192,8 +202,10 @@ onUnmounted(() => {
 
 .chart-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
 }
 
 .card-tag {
@@ -201,16 +213,19 @@ onUnmounted(() => {
   font-family: 'Space Grotesk', monospace;
   color: var(--color-primary-light);
   letter-spacing: 0.08em;
-  opacity: 0.7;
-  margin-right: 8px;
+  opacity: 0.6;
+  white-space: nowrap;
 }
 
 .chart-title {
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--text-primary);
   margin: 0;
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .range-buttons { display: flex; gap: 4px; }
@@ -241,8 +256,10 @@ onUnmounted(() => {
   margin-left: 0.5rem;
 }
 .download-btn {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
+  padding: 0;
   border: 0.5px solid var(--border-color);
   background: transparent;
   color: var(--text-muted);

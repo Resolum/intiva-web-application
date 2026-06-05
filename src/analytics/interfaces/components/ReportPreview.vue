@@ -15,6 +15,10 @@ const props = defineProps({
 
 const { t } = useI18n()
 
+const hasReport = computed(() =>
+  props.transactions.length > 0 || props.chartData.length > 0
+)
+
 const animatedIncome = useCountAnimation(computed(() => props.summary.totalIncome), 1200)
 const animatedExpenses = useCountAnimation(computed(() => props.summary.totalExpenses), 1200)
 const animatedSavings = useCountAnimation(computed(() => props.summary.netSavings), 1200)
@@ -63,7 +67,14 @@ const barChartOptions = {
       </div>
     </div>
 
-    <div class="document-card">
+    <div v-if="!hasReport" class="preview-placeholder">
+      <div class="placeholder-icon">
+        <i class="pi pi-chart-bar" style="font-size: 3rem; opacity: 0.4;"></i>
+      </div>
+      <p class="placeholder-text">{{ t('reports.preview.noData') }}</p>
+    </div>
+
+    <div v-else class="document-card">
       <div class="document-header">
         <div class="header-titles">
           <h2 class="doc-title">{{ t('reports.preview.title') }}</h2>
@@ -150,6 +161,7 @@ const barChartOptions = {
   flex-direction: column;
   height: 100%;
   font-family: 'Inter', sans-serif;
+  min-height: 400px;
 }
 
 .preview-header {
@@ -158,6 +170,8 @@ const barChartOptions = {
   align-items: center;
   padding: 0 0 1rem;
   color: var(--text-secondary);
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .preview-label {
@@ -165,7 +179,7 @@ const barChartOptions = {
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -174,7 +188,7 @@ const barChartOptions = {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .zoom-controls i {
@@ -186,15 +200,39 @@ const barChartOptions = {
   color: var(--text-primary);
 }
 
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  flex: 1;
+  opacity: 0.5;
+  text-align: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+}
+
+.placeholder-text {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
 .document-card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   border: 0.5px solid var(--border-color);
   box-shadow: var(--shadow-card);
-  padding: 2.5rem;
+  padding: 1.5rem;
   flex: 1;
   overflow-y: auto;
   color: var(--text-primary);
+  min-width: 0;
 }
 
 .document-header {
@@ -202,24 +240,26 @@ const barChartOptions = {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .doc-title {
   font-family: 'Work Sans', sans-serif;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
   color: var(--color-primary-light, #EAE8FF);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
 }
 
 .doc-subtitle {
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .header-meta {
   text-align: right;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
@@ -232,12 +272,13 @@ const barChartOptions = {
 .doc-divider {
   border: 0;
   border-top: 1px solid var(--border-color);
-  margin: 1.5rem 0;
+  margin: 1rem 0;
 }
 
 .summary-cards {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .summary-card {
@@ -378,6 +419,32 @@ const barChartOptions = {
 
 .tx-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+@media (max-width: 767px) {
+  .document-card {
+    padding: 1rem;
+  }
+  .summary-cards {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .summary-card {
+    padding: 1rem;
+  }
+  .sum-value {
+    font-size: 1.4rem;
+  }
+  .tx-table {
+    font-size: 0.75rem;
+  }
+  .tx-table th,
+  .tx-table td {
+    padding: 0.5rem 0.3rem;
+  }
+  .chart-wrapper {
+    height: 160px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

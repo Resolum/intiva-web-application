@@ -83,6 +83,8 @@ const route = useRoute()
 
 @media (max-width: 767px) {
   .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
     padding-bottom: 60px;
   }
 }

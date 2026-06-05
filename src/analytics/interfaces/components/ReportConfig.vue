@@ -513,6 +513,53 @@ function stringToHue(str) {
   80% { transform: translateX(4px); }
 }
 
+@media (max-width: 767px) {
+  .config-section {
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 0.65rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .icon-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .icon-card {
+    padding: 0.5rem;
+  }
+
+  .icon-card i {
+    font-size: 1.25rem;
+  }
+
+  .icon-card span {
+    font-size: 0.7rem;
+  }
+
+  .date-range {
+    gap: 0.35rem;
+  }
+
+  .date-input {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem 0.4rem 2rem;
+  }
+
+  .date-arrow {
+    font-size: 0.7rem;
+  }
+
+  .generate-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .icon-card { transition: none; }
   .icon-card.active { transform: none; }

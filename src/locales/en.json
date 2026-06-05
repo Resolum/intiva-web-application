@@ -123,6 +123,7 @@
       "netSavings": "Net Savings",
       "expenseChart": "Expense Distribution",
       "topTransactions": "Top Transactions",
+      "noData": "Configure and generate a report to preview it here",
       "columns": {
         "date": "Date",
         "description": "Description",

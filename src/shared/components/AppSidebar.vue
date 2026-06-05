@@ -260,7 +260,7 @@ function isActive(path) {
 }
 
 @media (max-width: 767px) {
-  .sidebar { display: none; }
+  .sidebar { display: none !important; }
   .bottom-nav {
     display: flex;
     position: fixed;

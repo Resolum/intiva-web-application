@@ -283,21 +283,28 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   position: sticky;
   top: 0;
   z-index: 10;
+  gap: 0.5rem;
+  overflow: hidden;
 }
 .page-title {
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 4vw, 1.1rem);
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -578,6 +585,33 @@ onUnmounted(() => {
 @keyframes panelOut {
   from { opacity: 1; transform: translateY(0) scale(1); }
   to   { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    padding: 0 0.5rem;
+    gap: 0.25rem;
+  }
+  .lang-btn {
+    display: none;
+  }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  .avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+  }
+  .notif-panel {
+    width: 280px;
+    right: -40px;
+  }
+  .calendar-panel {
+    width: 240px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

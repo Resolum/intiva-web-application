@@ -123,6 +123,7 @@
       "netSavings": "Ahorro Neto",
       "expenseChart": "Distribución de Gastos",
       "topTransactions": "Transacciones Principales",
+      "noData": "Configura y genera un reporte para visualizarlo aquí",
       "columns": {
         "date": "Fecha",
         "description": "Descripción",

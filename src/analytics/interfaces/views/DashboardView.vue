@@ -92,24 +92,26 @@ function onLogout() {
 <style scoped>
 .dashboard-body {
   padding: 1.5rem 2rem 2rem;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .period-filter {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
   flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 1rem;
 }
 .period-btn {
-  padding: 0.3rem 0.8rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 20px;
   border: 1px solid var(--border-color);
   background: transparent;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: all 0.2s;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 .period-btn:hover {
   background: rgba(83, 74, 183, 0.1);
@@ -124,7 +126,14 @@ function onLogout() {
 .custom-range {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.custom-range input {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.75rem;
 }
 .date-input {
   padding: 0.3rem 0.5rem;
@@ -133,7 +142,7 @@ function onLogout() {
   background: transparent;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 .date-sep {
   color: var(--text-muted);
@@ -142,55 +151,66 @@ function onLogout() {
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
+
 .charts-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   margin-bottom: 1rem;
 }
+
 .bottom-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-@media (max-width: 1023px) {
-  .dashboard-body {
-    padding: 1rem;
-  }
-  .charts-row {
-    grid-template-columns: 1fr;
-  }
-  .bottom-row {
-    grid-template-columns: 1fr;
-  }
+@media (min-width: 640px) {
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 767px) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-  .metrics-grid .metric-card {
-    min-height: unset;
-  }
-  .charts-row > div,
-  .bottom-row > div {
-    max-height: 250px;
-  }
-  .period-filter {
-    gap: 0.3rem;
+@media (min-width: 1024px) {
+  .dashboard-body {
+    padding: 1.5rem 2rem 2rem;
   }
   .period-btn {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.6rem;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .charts-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  }
+  .bottom-row {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-body {
+    padding: 0.75rem;
+  }
+  .period-filter {
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+  .period-btn {
+    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+    min-width: unset;
+  }
+  .custom-range input {
+    min-width: 100px;
   }
 }
 </style>
