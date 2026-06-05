@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/iam/login/application/auth.store.js";
 import { useAnalyticsApplicationService } from "@/analytics/application/analytics.service.js";
+import { usePeriodFilter } from "@/composables/usePeriodFilter.js";
 
-import AppSidebar from "@/shared/components/AppSidebar.vue";
-import AppHeader from "@/shared/components/AppHeader.vue";
+import AppLayout from "@/shared/components/AppLayout.vue";
 import MetricCardComponent from "@/analytics/interfaces/components/MetricCardComponent.vue";
 import BalanceEvolutionChart from "@/analytics/interfaces/components/BalanceEvolutionChart.vue";
 import ExpensesByCategoryChart from "@/analytics/interfaces/components/ExpensesByCategoryChart.vue";
@@ -18,7 +18,8 @@ const { t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 const service = useAnalyticsApplicationService();
-const activeRange = ref("6M");
+
+const { selectedPeriod, customFrom, customTo, dateRange } = usePeriodFilter();
 
 const metricCards = service.getMetricCards();
 const categoryData = service.getCategoryExpenses();
@@ -26,25 +27,16 @@ const incomeVsData = service.getIncomeVsExpenses();
 const savingsGoals = service.getSavingsGoals();
 const recentAlerts = service.getRecentAlerts();
 
-/**
- * Balance evolution points filtered by activeRange.
- * Recomputed whenever activeRange changes.
- */
+const activeRange = computed(() => {
+  if (selectedPeriod.value === 'Personalizado') return '6M'
+  if (selectedPeriod.value === '1A') return '1Y'
+  return selectedPeriod.value
+})
+
 const balancePoints = computed(() =>
   service.getBalanceEvolution(activeRange.value),
 );
 
-/**
- * Updates the active time range.
- * @param {string} range - '1M' | '6M' | '1Y'
- */
-function onRangeChange(range) {
-  activeRange.value = range;
-}
-
-/**
- * Handles user logout.
- */
 function onLogout() {
   authStore.clearAuth();
   router.push('/sign-in');
@@ -52,66 +44,102 @@ function onLogout() {
 </script>
 
 <template>
-  <div class="app-layout">
-    <AppSidebar @logout="onLogout" />
-    <div class="main-content">
-      <AppHeader
-        :page-title="t('dashboard.title')"
-        :alert-count="recentAlerts.length"
-      />
+  <AppLayout
+    :page-title="t('dashboard.title')"
+    :alert-count="recentAlerts.length"
+    @logout="onLogout"
+  >
+    <div class="dashboard-body">
+      <div class="period-filter">
+        <button
+          v-for="p in ['1M','3M','6M','1A','Personalizado']"
+          :key="p"
+          :class="['period-btn', { active: selectedPeriod === p }]"
+          @click="selectedPeriod = p"
+        >{{ p }}</button>
+        <div v-if="selectedPeriod === 'Personalizado'" class="custom-range">
+          <input type="date" class="date-input" v-model="customFrom" />
+          <span class="date-sep">→</span>
+          <input type="date" class="date-input" v-model="customTo" />
+        </div>
+      </div>
 
-      <main class="page-body">
-        <div class="metrics-grid">
-          <MetricCardComponent
-            v-for="card in metricCards"
-            :key="card.labelKey"
-            :card="card"
-          />
-        </div>
-        <div style="margin-bottom: 1rem">
-          <BalanceEvolutionChart
-            :data="balancePoints"
-            :range="activeRange"
-            @range-change="onRangeChange"
-          />
-        </div>
-        <div class="charts-row">
-          <ExpensesByCategoryChart :data="categoryData" />
-          <IncomeVsExpensesChart :data="incomeVsData" />
-        </div>
-        <div class="bottom-row">
-          <SavingsGoalsProgress :goals="savingsGoals" />
-          <RecentAlertsPanel :alerts="recentAlerts" />
-        </div>
-      </main>
+      <div class="metrics-grid">
+        <MetricCardComponent
+          v-for="card in metricCards"
+          :key="card.labelKey"
+          :card="card"
+        />
+      </div>
+      <div style="margin-bottom: 1rem">
+        <BalanceEvolutionChart
+          :data="balancePoints"
+          :range="activeRange"
+        />
+      </div>
+      <div class="charts-row">
+        <ExpensesByCategoryChart :data="categoryData" :date-range="dateRange" />
+        <IncomeVsExpensesChart :data="incomeVsData" :date-range="dateRange" />
+      </div>
+      <div class="bottom-row">
+        <SavingsGoalsProgress :goals="savingsGoals" />
+        <RecentAlertsPanel :alerts="recentAlerts" />
+      </div>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <style scoped>
-.app-layout {
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-  z-index: 3;
-  isolation: isolate;
-  background: var(--bg-primary);
-  font-family: "Inter", system-ui, sans-serif;
-}
-.main-content {
-  margin-left: var(--sidebar-width);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-secondary);
-  min-height: 100vh;
-  width: calc(100% - var(--sidebar-width));
-  box-sizing: border-box;
-}
-.page-body {
+.dashboard-body {
   padding: 1.5rem 2rem 2rem;
-  flex: 1;
 }
+
+.period-filter {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.period-btn {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+.period-btn:hover {
+  background: rgba(83, 74, 183, 0.1);
+  color: var(--text-primary);
+}
+.period-btn.active {
+  background: var(--color-secondary);
+  color: var(--bg-primary);
+  border-color: var(--color-secondary);
+  font-weight: 600;
+}
+.custom-range {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.date-input {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.8rem;
+}
+.date-sep {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -129,5 +157,40 @@ function onLogout() {
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1023px) {
+  .dashboard-body {
+    padding: 1rem;
+  }
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+  .bottom-row {
+    grid-template-columns: 1fr;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .metrics-grid .metric-card {
+    min-height: unset;
+  }
+  .charts-row > div,
+  .bottom-row > div {
+    max-height: 250px;
+  }
+  .period-filter {
+    gap: 0.3rem;
+  }
+  .period-btn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
 }
 </style>

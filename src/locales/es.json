@@ -43,7 +43,12 @@
     "switchLanguage": "Cambiar idioma",
     "toggleTheme": "Cambiar tema",
     "lightMode": "Modo claro",
-    "darkMode": "Modo oscuro"
+    "darkMode": "Modo oscuro",
+    "notifications": "Notificaciones",
+    "noNotifications": "Todo al día, sin notificaciones.",
+    "markAllRead": "Marcar todo como leído",
+    "calendar": "Calendario",
+    "help": "Ayuda"
   },
   "dashboard": {
     "title": "Dashboard",

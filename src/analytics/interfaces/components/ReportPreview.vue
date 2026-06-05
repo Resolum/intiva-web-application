@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
+import { useCountAnimation } from '@/composables/useCountAnimation.js'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
@@ -13,6 +14,10 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+
+const animatedIncome = useCountAnimation(computed(() => props.summary.totalIncome), 1200)
+const animatedExpenses = useCountAnimation(computed(() => props.summary.totalExpenses), 1200)
+const animatedSavings = useCountAnimation(computed(() => props.summary.netSavings), 1200)
 
 const formatCurrency = (val) => {
   return `$${Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -73,24 +78,30 @@ const barChartOptions = {
       <hr class="doc-divider" />
 
       <div class="summary-cards">
-        <div class="summary-card">
+        <div class="summary-card card-income" style="--flip-delay: 0s">
+          <i class="pi pi-arrow-up card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.totalIncome') }}</div>
-          <div class="sum-value">{{ formatCurrency(summary.totalIncome) }}</div>
+          <div class="sum-value">{{ formatCurrency(animatedIncome) }}</div>
         </div>
-        <div class="summary-card">
+        <div class="summary-card card-expense" style="--flip-delay: 0.1s">
+          <i class="pi pi-arrow-down card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.totalExpenses') }}</div>
-          <div class="sum-value">{{ formatCurrency(summary.totalExpenses) }}</div>
+          <div class="sum-value">{{ formatCurrency(animatedExpenses) }}</div>
         </div>
-        <div class="summary-card highlight">
+        <div class="summary-card card-savings" style="--flip-delay: 0.2s">
+          <i class="pi pi-star card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.netSavings') }}</div>
-          <div class="sum-value">{{ formatCurrency(summary.netSavings) }}</div>
+          <div class="sum-value">{{ formatCurrency(animatedSavings) }}</div>
         </div>
       </div>
 
       <hr class="doc-divider" />
 
       <div class="chart-section">
-        <h3 class="section-heading">{{ t('reports.preview.expenseChart') }}</h3>
+        <h3 class="section-heading">
+          <i class="pi pi-chart-pie"></i>
+          {{ t('reports.preview.expenseChart') }}
+        </h3>
         <div class="chart-wrapper">
           <Bar :data="barChartData" :options="barChartOptions" />
         </div>
@@ -99,7 +110,10 @@ const barChartOptions = {
       <hr class="doc-divider" />
 
       <div class="transactions-section">
-        <h3 class="section-heading">{{ t('reports.preview.topTransactions') }}</h3>
+        <h3 class="section-heading">
+          <i class="pi pi-list"></i>
+          {{ t('reports.preview.topTransactions') }}
+        </h3>
         <table class="tx-table">
           <thead>
             <tr>
@@ -110,7 +124,12 @@ const barChartOptions = {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="tx in transactions" :key="tx.id">
+            <tr
+              v-for="(tx, i) in transactions"
+              :key="tx.id"
+              class="tx-row"
+              :style="{'--row-delay': `${i * 0.05}s`}"
+            >
               <td>{{ tx.date }}</td>
               <td>{{ tx.description }}</td>
               <td>{{ tx.category }}</td>
@@ -137,7 +156,7 @@ const barChartOptions = {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0 1rem 0;
+  padding: 0 0 1rem;
   color: var(--text-secondary);
 }
 
@@ -146,7 +165,7 @@ const barChartOptions = {
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -162,6 +181,7 @@ const barChartOptions = {
   cursor: pointer;
   color: var(--text-muted);
 }
+
 .zoom-controls i:hover {
   color: var(--text-primary);
 }
@@ -222,43 +242,91 @@ const barChartOptions = {
 
 .summary-card {
   flex: 1;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
   text-align: center;
+  animation: flipIn 0.6s ease forwards;
+  animation-delay: var(--flip-delay);
+  opacity: 0;
 }
 
-.summary-card.highlight {
-  background: rgba(83, 74, 183, 0.15);
-  border: 1px solid var(--color-primary);
+@keyframes flipIn {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateX(-30deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) rotateX(0deg);
+  }
 }
 
-.summary-card.highlight .sum-value {
-  color: var(--color-neon, #CDEB45);
+.card-icon {
+  font-size: 1.4rem;
+  opacity: 0.7;
+}
+
+.card-income {
+  background: linear-gradient(135deg, rgba(29, 158, 117, 0.12), rgba(29, 158, 117, 0.04));
+  border: 1px solid rgba(29, 158, 117, 0.2);
+}
+
+.card-income .card-icon,
+.card-income .sum-value {
+  color: var(--color-success);
+}
+
+.card-expense {
+  background: linear-gradient(135deg, rgba(216, 90, 48, 0.12), rgba(216, 90, 48, 0.04));
+  border: 1px solid rgba(216, 90, 48, 0.2);
+}
+
+.card-expense .card-icon,
+.card-expense .sum-value {
+  color: var(--color-danger);
+}
+
+.card-savings {
+  background: linear-gradient(135deg, rgba(83, 74, 183, 0.15), rgba(83, 74, 183, 0.05));
+  border: 1px solid rgba(83, 74, 183, 0.25);
+}
+
+.card-savings .card-icon,
+.card-savings .sum-value {
+  color: var(--color-primary-light);
 }
 
 .sum-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
-  margin-bottom: 0.5rem;
 }
 
 .sum-value {
   font-family: 'Work Sans', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .section-heading {
-  font-family: 'Work Sans', sans-serif;
-  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
+}
+
+.section-heading i {
+  font-size: 1.1rem;
+  color: var(--color-primary-light);
 }
 
 .chart-wrapper {
@@ -269,10 +337,11 @@ const barChartOptions = {
 .tx-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-.tx-table th, .tx-table td {
+.tx-table th,
+.tx-table td {
   padding: 0.75rem 0.5rem;
   border-bottom: 1px solid var(--border-color);
   text-align: left;
@@ -282,15 +351,37 @@ const barChartOptions = {
   color: var(--text-muted);
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
+}
+
+.tx-row {
+  opacity: 0;
+  animation: rowFadeIn 0.35s ease forwards;
+  animation-delay: var(--row-delay);
+  transition: background 0.2s ease;
+}
+
+@keyframes rowFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.tx-row:hover {
+  background: var(--bg-secondary);
 }
 
 .tx-table .right-align {
   text-align: right;
+  font-weight: 600;
 }
 
 .tx-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary-card { animation: none; opacity: 1; }
+  .tx-row { animation: none; opacity: 1; }
 }
 </style>

@@ -14,10 +14,10 @@ export function useAnalyticsApplicationService() {
    */
   function getMetricCards() {
     return [
-      createMetricCard('dashboard.totalBalance',    12765,  2.4, 'wallet'),
-      createMetricCard('dashboard.monthlyIncome',    3200,  5.1, 'trending-up'),
-      createMetricCard('dashboard.monthlyExpenses',  1980, -1.2, 'trending-down'),
-      createMetricCard('dashboard.netSavings',       1220, 10.0, 'piggy-bank'),
+      createMetricCard('dashboard.totalBalance',    12765,  2.4, 'credit-card'),
+      createMetricCard('dashboard.monthlyIncome',    3200,  5.1, 'arrow-up'),
+      createMetricCard('dashboard.monthlyExpenses',  1980, -1.2, 'arrow-down'),
+      createMetricCard('dashboard.netSavings',       1220, 10.0, 'star'),
     ]
   }
 
@@ -44,6 +44,7 @@ export function useAnalyticsApplicationService() {
       createBalancePoint('2025-05', 12765),
     ]
     if (range === '1M') return allPoints.slice(-1)
+    if (range === '3M') return allPoints.slice(-3)
     if (range === '6M') return allPoints.slice(-6)
     return allPoints
   }

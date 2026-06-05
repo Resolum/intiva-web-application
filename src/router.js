@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/iam/login/interfaces/views/LoginView.vue'
 import DashboardView from '@/analytics/interfaces/views/DashboardView.vue'
+import ReportsView from '@/analytics/interfaces/views/ReportsView.vue'
 
 const routes = [
   {
@@ -15,12 +16,13 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardView
+    component: DashboardView,
+    meta: { requiresAuth: true }
   },
   {
     path: '/reports',
     name: 'reports',
-    component: () => import('@/analytics/interfaces/views/ReportsView.vue'),
+    component: ReportsView,
     meta: { requiresAuth: true }
   }
 ]
