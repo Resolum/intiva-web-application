@@ -43,7 +43,12 @@
     "switchLanguage": "Switch language",
     "toggleTheme": "Toggle theme",
     "lightMode": "Light mode",
-    "darkMode": "Dark mode"
+    "darkMode": "Dark mode",
+    "notifications": "Notifications",
+    "noNotifications": "You're all caught up, no notifications.",
+    "markAllRead": "Mark all as read",
+    "calendar": "Calendar",
+    "help": "Help"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -118,6 +123,7 @@
       "netSavings": "Net Savings",
       "expenseChart": "Expense Distribution",
       "topTransactions": "Top Transactions",
+      "noData": "Configure and generate a report to preview it here",
       "columns": {
         "date": "Date",
         "description": "Description",
