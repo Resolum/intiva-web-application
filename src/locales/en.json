@@ -61,8 +61,12 @@
     "incomeVsExpenses": "Income vs Expenses",
     "savingsGoalsProgress": "Savings Goals Progress",
     "recentAlerts": "Recent Alerts",
-    "total": "Total"
+    "total": "Total",
+    "noAlerts": "No recent alerts.",
+    "loading": "Loading data...",
+    "errorLoading": "Could not load data. Please try again."
   },
+  "download": "Download",
   "timeRange": {
     "oneMonth": "1M",
     "sixMonths": "6M",
@@ -110,6 +114,8 @@
       "period": "Period",
       "members": "Included Members",
       "addMember": "Add member",
+      "noFamily": "No family group found",
+      "noFamily": "No family group found",
       "format": "Export Format",
       "formats": { "pdf": "PDF", "csv": "CSV" },
       "generateButton": "Generate & Download"

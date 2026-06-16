@@ -6,17 +6,21 @@ export function usePeriodFilter() {
   const customTo = ref('')
 
   const dateRange = computed(() => {
-    const now = new Date()
-    const to = now.toISOString().split('T')[0]
-    const periods = {
-      '1M': 1, '3M': 3, '6M': 6, '1A': 12
-    }
     if (selectedPeriod.value === 'Personalizado') {
       return { from: customFrom.value, to: customTo.value }
     }
-    const months = periods[selectedPeriod.value] || 6
-    const from = new Date(now.setMonth(now.getMonth() - months))
-    return { from: from.toISOString().split('T')[0], to }
+
+    const PERIOD_MONTHS = { '1M': 1, '3M': 3, '6M': 6, '1A': 12 }
+    const months = PERIOD_MONTHS[selectedPeriod.value] ?? 6
+
+    const toDate   = new Date()
+    const fromDate = new Date()
+    fromDate.setMonth(fromDate.getMonth() - months)
+
+    return {
+      from: fromDate.toISOString().split('T')[0],
+      to:   toDate.toISOString().split('T')[0],
+    }
   })
 
   return { selectedPeriod, customFrom, customTo, dateRange }

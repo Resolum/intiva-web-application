@@ -61,8 +61,12 @@
     "incomeVsExpenses": "Ingresos vs Gastos",
     "savingsGoalsProgress": "Progreso de Metas de Ahorro",
     "recentAlerts": "Alertas Recientes",
-    "total": "Total"
+    "total": "Total",
+    "noAlerts": "Sin alertas recientes.",
+    "loading": "Cargando datos...",
+    "errorLoading": "No se pudieron cargar los datos. Intenta nuevamente."
   },
+  "download": "Descargar",
   "timeRange": {
     "oneMonth": "1M",
     "sixMonths": "6M",
@@ -110,6 +114,8 @@
       "period": "Período",
       "members": "Miembros Incluidos",
       "addMember": "Agregar miembro",
+      "noFamily": "No se encontró un grupo familiar",
+      "noFamily": "No se encontró un grupo familiar",
       "format": "Formato de Exportación",
       "formats": { "pdf": "PDF", "csv": "CSV" },
       "generateButton": "Generar & Descargar"
