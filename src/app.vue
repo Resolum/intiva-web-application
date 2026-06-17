@@ -1,25 +1,11 @@
 <script setup>
-import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n';
 
-const route = useRoute()
+const { t } = useI18n();
 </script>
 
 <template>
-  <RouterView v-slot="{ Component }">
-    <Transition v-if="!route.meta.requiresAuth" name="fade" mode="out-in">
-      <component :is="Component" :key="$route.path" />
-    </Transition>
-    <component v-else :is="Component" />
-  </RouterView>
+  <pv-toast />
+  <pv-confirm-dialog />
+  <router-view />
 </template>
-
-<style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.22s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

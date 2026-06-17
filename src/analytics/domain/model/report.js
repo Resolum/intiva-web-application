@@ -19,26 +19,41 @@ export const ExportFormat = {
 }
 
 /**
- * Creates a report configuration object.
- * @param {string} type - Report type from ReportType enum
- * @param {string} startDate - Start date in ISO format
- * @param {string} endDate - End date in ISO format
- * @param {string[]} memberIds - List of member IDs to include
- * @param {string} format - Export format from ExportFormat enum
- * @returns {Object} Report configuration object
+ * Report configuration value object.
+ *
+ * @class ReportConfig
  */
-export const createReportConfig = (type, startDate, endDate, memberIds, format) => ({
-  type, startDate, endDate, memberIds, format
-})
+export class ReportConfig {
+    /**
+     * @param {string} type - Report type from ReportType enum.
+     * @param {string} startDate - Start date in ISO format.
+     * @param {string} endDate - End date in ISO format.
+     * @param {string[]} memberIds - List of member IDs to include.
+     * @param {string} format - Export format from ExportFormat enum.
+     */
+    constructor(type, startDate, endDate, memberIds, format) {
+        this.type = type;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.memberIds = memberIds;
+        this.format = format;
+    }
+}
 
 /**
- * Creates a financial summary object.
- * @param {number} totalIncome - Total income amount
- * @param {number} totalExpenses - Total expenses amount
- * @returns {{ totalIncome: number, totalExpenses: number, netSavings: number }}
+ * Financial summary value object.
+ *
+ * @class FinancialSummary
  */
-export const createFinancialSummary = (totalIncome, totalExpenses) => ({
-  totalIncome,
-  totalExpenses,
-  netSavings: totalIncome - totalExpenses
-})
+export class FinancialSummary {
+    /**
+     * @param {number} totalIncome - Total income amount.
+     * @param {number} totalExpenses - Total expenses amount.
+     * @param {number|null} netSavings - Net savings (defaults to income - expenses).
+     */
+    constructor(totalIncome, totalExpenses, netSavings = null) {
+        this.totalIncome = totalIncome;
+        this.totalExpenses = totalExpenses;
+        this.netSavings = netSavings !== null ? netSavings : totalIncome - totalExpenses;
+    }
+}
