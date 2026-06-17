@@ -1,11 +1,16 @@
 /**
- * Factory function for a balance evolution data point (area chart).
+ * Balance evolution data point entity (area chart).
  * Belongs to the analytics bounded context, domain layer.
  *
- * @param {string} month - ISO month string 'YYYY-MM'
- * @param {number} balance - Net balance at end of month in PEN
- * @returns {{ month: string, balance: number }}
+ * @class BalancePoint
  */
-export function createBalancePoint(month, balance) {
-  return { month, balance }
+export class BalancePoint {
+    /**
+     * @param {string} month - ISO month string 'YYYY-MM'.
+     * @param {number} balance - Net balance at end of month in PEN.
+     */
+    constructor(month, balance) {
+        this.month = month;
+        this.balance = balance;
+    }
 }

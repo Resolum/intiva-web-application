@@ -9,5 +9,8 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    target: ['chrome109', 'firefox115', 'edge109'],
   }
 })

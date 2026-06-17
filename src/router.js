@@ -1,47 +1,66 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/iam/login/interfaces/views/LoginView.vue'
-import DashboardView from '@/analytics/interfaces/views/DashboardView.vue'
-import ReportsView from '@/analytics/interfaces/views/ReportsView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import iamRoutes from '@/iam/presentation/iam-routes.js';
+import analyticsRoutes from '@/analytics/presentation/analytics-routes.js';
+import { authenticationGuard } from '@/iam/infrastructure/authentication.guard.js';
 
+// Lazy-loaded shared views
+const PageNotFound = () => import('@/shared/presentation/views/page-not-found.vue');
+
+/**
+ * Application route definitions organised by bounded context.
+ * Each context contributes its own child routes.
+ *
+ * @type {import('vue-router').RouteRecordRaw[]}
+ */
 const routes = [
-  {
-    path: '/',
-    redirect: '/sign-in'
-  },
-  {
-    path: '/sign-in',
-    name: 'sign-in',
-    component: LoginView
-  },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/reports',
-    name: 'reports',
-    component: ReportsView,
-    meta: { requiresAuth: true }
-  }
-]
+    {
+        path: '/',
+        redirect: '/iam/sign-in',
+    },
+    {
+        path: '/iam',
+        name: 'iam',
+        children: iamRoutes,
+    },
+    {
+        path: '/analytics',
+        name: 'analytics',
+        children: analyticsRoutes,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'page-not-found',
+        component: PageNotFound,
+        meta: { title: 'Page Not Found' },
+    },
+];
 
+/**
+ * Vue Router instance for the application.
+ * Uses HTML5 history mode.
+ *
+ * @type {import('vue-router').Router}
+ */
 const router = createRouter({
-  history: createWebHistory(),
-  routes
-})
+    history: createWebHistory(),
+    routes,
+});
 
+/**
+ * Global navigation guard that updates the document title and enforces authentication.
+ *
+ * @param {import('vue-router').RouteLocationNormalized} to - Target route.
+ * @param {import('vue-router').RouteLocationNormalized} from - Previous route.
+ * @param {import('vue-router').NavigationGuardNext} next - Guard continuation callback.
+ * @returns {void}
+ */
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/sign-in', '/sign-up']
-  const authRequired = !publicPages.includes(to.path)
-  const loggedIn = localStorage.getItem('auth_token')
+    // Set the page title
+    const baseTitle = 'Intiva';
+    document.title = to.meta?.title ? `${baseTitle} - ${to.meta.title}` : baseTitle;
 
-  if (authRequired && !loggedIn) {
-    return next('/sign-in')
-  }
+    // Delegate to the authentication guard
+    return authenticationGuard(to, from, next);
+});
 
-  next()
-})
-
-export default router
+export default router;
