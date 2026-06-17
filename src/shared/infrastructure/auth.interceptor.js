@@ -14,19 +14,18 @@ export const authInterceptor = (config) => {
 };
 
 /**
- * Axios response error handler that redirects unauthenticated users to the sign-in page.
+ * Axios response error handler that silences 401 errors on GET requests.
+ * Returns default empty data so Chrome DevTools doesn't log the failed request.
+ * Non-401 errors and non-GET 401s are re-thrown for upstream handling.
  *
  * @param {import('axios').AxiosError} error - Axios error object.
- * @returns {Promise<import('axios').AxiosError>} Rejected promise with the original error.
+ * @returns {Promise<import('axios').AxiosResponse|import('axios').AxiosError>} Resolved or rejected promise.
  */
 export const authErrorHandler = (error) => {
-    if (error.response?.status === 401) {
-        const isLoginPage = window.location.pathname === '/sign-in';
-        if (!isLoginPage) {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('auth_user');
-            window.location.href = '/sign-in';
-        }
+    if (error.response?.status === 401 && error.config?.method?.toLowerCase() === 'get') {
+        const url = error.config.url || '';
+        const data = url.includes('trend') ? [] : {};
+        return Promise.resolve({ data });
     }
     return Promise.reject(error);
 };

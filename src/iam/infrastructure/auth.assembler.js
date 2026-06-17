@@ -102,6 +102,12 @@ export const authAssembler = {
     }
 
     const user = new User({ id: normalizeUserId(userId), email })
-    return { ...user, token }
+
+    const candidate = data.user && typeof data.user === 'object' ? data.user : data
+    const familyId = normalizeUserId(
+      data.familyId ?? candidate.familyId ?? data.family?.id ?? candidate.family?.id ?? null,
+    )
+
+    return { ...user, token, familyId }
   },
 }

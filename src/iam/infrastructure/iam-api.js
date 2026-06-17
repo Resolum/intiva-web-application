@@ -20,6 +20,10 @@ export class IamApi extends BaseApi {
         super();
         this.addRequestInterceptor(authInterceptor);
         this.addResponseInterceptor(null, authErrorHandler);
+        const token = localStorage.getItem('auth_token');
+        if (token && token !== 'undefined') {
+            this.http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         this.#signInEndpoint = new BaseEndpoint(this, signInEndpointPath);
     }
 

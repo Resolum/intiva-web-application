@@ -98,6 +98,10 @@
     "health": "Health"
   },
   "plan": { "premium": "Premium Plan" },
+  "pageNotFound": {
+    "message": "Page not found",
+    "goHome": "Go Home"
+  },
   "logout": "Sign out",
   "currency": { "symbol": "S/", "code": "PEN" },
   "reports": {

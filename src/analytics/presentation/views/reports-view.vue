@@ -38,7 +38,7 @@ const onLogout = () => {
 
 onMounted(async () => {
   if (authStore.user?.id) {
-    await familyStore.discoverAndLoad(authStore.user.id)
+    await familyStore.discoverAndLoad(authStore.user.id, authStore.familyId)
   }
 })
 

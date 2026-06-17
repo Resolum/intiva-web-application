@@ -14,6 +14,7 @@ export class FamilyMember {
      */
     constructor(params = {}) {
         this.id = params.id ?? null;
+        this.userId = params.userId ?? params.user_id ?? null;
         this.name = params.name ?? '';
         this.role = params.role ?? '';
         this.email = params.email ?? '';

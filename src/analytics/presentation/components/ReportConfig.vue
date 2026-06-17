@@ -59,7 +59,7 @@ watch(() => familyStore.members, (members) => {
 onMounted(async () => {
   const fid = props.familyId ?? authStore.familyId
   if (fid && !familyStore.hasGroup) {
-    await familyStore.loadGroup(String(fid))
+    await familyStore.loadGroup(authStore.user.id, String(fid))
   }
 })
 
@@ -141,10 +141,12 @@ function ripple(e) {
 }
 
 function getInitial(name) {
-  return name ? name.charAt(0).toUpperCase() : '?'
+  const s = String(name ?? '')
+  return s ? s.charAt(0).toUpperCase() : '?'
 }
 
 function stringToHue(str) {
+  if (!str) return 200
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
@@ -214,7 +216,7 @@ defineExpose({ onGenerateDone })
           :title="`User ${member.userId} · ${member.role}`"
           @click="toggleMember(member.id)"
         >
-          <span class="avatar-initial">{{ getInitial(member.userId) }}</span>
+          <i class="pi pi-user avatar-icon"></i>
           <span v-if="!isMemberSelected(member.id)" class="member-unselected-overlay" aria-hidden="true">
             <i class="pi pi-times" style="font-size:10px"></i>
           </span>
@@ -472,11 +474,9 @@ defineExpose({ onGenerateDone })
   to { transform: scale(0); opacity: 0; }
 }
 
-.avatar-initial {
-  font-size: 15px;
-  font-weight: 600;
+.avatar-icon {
+  font-size: 18px;
   color: #fff;
-  line-height: 1;
   position: relative;
   z-index: 1;
 }

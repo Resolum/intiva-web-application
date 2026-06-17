@@ -1,6 +1,6 @@
 import { BaseApi } from '@/shared/infrastructure/base-api.js';
 import { BaseEndpoint } from '@/shared/infrastructure/base-endpoint.js';
-import { authInterceptor, authErrorHandler } from '@/shared/infrastructure/auth.interceptor.js';
+import { authInterceptor } from '@/shared/infrastructure/auth.interceptor.js';
 
 const usersEndpointPath = import.meta.env.VITE_USERS_API_URL || 'users';
 const categoriesEndpointPath = import.meta.env.VITE_CATEGORIES_API_URL || 'categories';
@@ -31,7 +31,10 @@ export class HouseholdApi extends BaseApi {
     constructor() {
         super();
         this.addRequestInterceptor(authInterceptor);
-        this.addResponseInterceptor(null, authErrorHandler);
+        const token = localStorage.getItem('auth_token');
+        if (token && token !== 'undefined') {
+            this.http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         this.#usersEndpoint = new BaseEndpoint(this, usersEndpointPath);
         this.#categoriesEndpoint = new BaseEndpoint(this, categoriesEndpointPath);
         this.#transactionsEndpoint = new BaseEndpoint(this, transactionsEndpointPath);
@@ -45,6 +48,15 @@ export class HouseholdApi extends BaseApi {
      */
     getUsers() {
         return this.#usersEndpoint.getAll();
+    }
+
+    /**
+     * Fetches a user by ID.
+     * @param {string|number} userId - User identifier.
+     * @returns {Promise<import('axios').AxiosResponse<Object>>} User response.
+     */
+    getUserById(userId) {
+        return this.#usersEndpoint.http.get(`${usersEndpointPath}/${userId}`);
     }
 
     /**
@@ -115,8 +127,6 @@ export class HouseholdApi extends BaseApi {
      * @returns {Promise<import('axios').AxiosResponse<Object>>} Invitations response.
      */
     getInvitations(userId) {
-        return this.#invitationsEndpoint.http.get(this.#invitationsEndpoint.endpointPath, {
-            params: { userId },
-        });
+        return this.#usersEndpoint.http.get(`${usersEndpointPath}/${userId}/invitations`);
     }
 }

@@ -2,13 +2,15 @@ import { BaseApi } from '@/shared/infrastructure/base-api.js';
 import { BaseEndpoint } from '@/shared/infrastructure/base-endpoint.js';
 import { authInterceptor, authErrorHandler } from '@/shared/infrastructure/auth.interceptor.js';
 
-const summaryEndpoint = import.meta.env.VITE_ANALYTICS_SUMMARY_URL || 'summary';
-const trendEndpoint = import.meta.env.VITE_ANALYTICS_TREND_URL || 'trend';
-const savingGoalsEndpoint = import.meta.env.VITE_ANALYTICS_SAVING_GOALS_URL || 'saving-goals';
-const spendingLimitsEndpoint = import.meta.env.VITE_ANALYTICS_SPENDING_LIMITS_URL || 'spending-limits';
-const categoryRankingEndpoint = import.meta.env.VITE_ANALYTICS_CATEGORIES_RANKING_URL || 'categories/ranking';
-const reportsGenerateEndpoint = import.meta.env.VITE_ANALYTICS_REPORTS_GENERATE_URL || 'reports/generate';
-const reportsSummaryEndpoint = import.meta.env.VITE_ANALYTICS_REPORTS_SUMMARY_URL || 'reports/summary';
+const analyticsPrefix = import.meta.env.VITE_ANALYTICS_API_URL || 'analytics';
+
+const summaryEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_SUMMARY_URL || 'summary'}`;
+const trendEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_TREND_URL || 'trend'}`;
+const savingGoalsEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_SAVING_GOALS_URL || 'saving-goals'}`;
+const spendingLimitsEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_SPENDING_LIMITS_URL || 'spending-limits'}`;
+const categoryRankingEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_CATEGORIES_RANKING_URL || 'categories/ranking'}`;
+const reportsGenerateEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_REPORTS_GENERATE_URL || 'reports/generate'}`;
+const reportsSummaryEndpoint = `${analyticsPrefix}/${import.meta.env.VITE_ANALYTICS_REPORTS_SUMMARY_URL || 'reports/summary'}`;
 
 /**
  * Infrastructure gateway for the Analytics bounded-context endpoints.
@@ -38,6 +40,10 @@ export class AnalyticsApi extends BaseApi {
         super();
         this.addRequestInterceptor(authInterceptor);
         this.addResponseInterceptor(null, authErrorHandler);
+        const token = localStorage.getItem('auth_token');
+        if (token && token !== 'undefined') {
+            this.http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         this.#summaryEndpoint = new BaseEndpoint(this, summaryEndpoint);
         this.#trendEndpoint = new BaseEndpoint(this, trendEndpoint);
         this.#savingGoalsEndpoint = new BaseEndpoint(this, savingGoalsEndpoint);
@@ -53,10 +59,14 @@ export class AnalyticsApi extends BaseApi {
      * @param {Object} params - Query parameters (periodType, periodStart, periodEnd).
      * @returns {Promise<import('axios').AxiosResponse<Object>>} Summary response.
      */
-    getSummary(userId, params) {
-        return this.#summaryEndpoint.http.get(this.#summaryEndpoint.endpointPath, {
-            params: { ownerId: userId, ownerType: 'INDIVIDUAL', ...params },
-        });
+    async getSummary(userId, params) {
+        try {
+            return await this.#summaryEndpoint.http.get(this.#summaryEndpoint.endpointPath, {
+                params: { ownerId: userId, ownerType: 'INDIVIDUAL', ...params },
+            });
+        } catch {
+            return { data: {} };
+        }
     }
 
     /**
@@ -65,10 +75,14 @@ export class AnalyticsApi extends BaseApi {
      * @param {Object} params - Query parameters.
      * @returns {Promise<import('axios').AxiosResponse<Object>>} Trend response.
      */
-    getTrend(userId, params) {
-        return this.#trendEndpoint.http.get(this.#trendEndpoint.endpointPath, {
-            params: { ownerId: userId, ownerType: 'INDIVIDUAL', ...params },
-        });
+    async getTrend(userId, params) {
+        try {
+            return await this.#trendEndpoint.http.get(this.#trendEndpoint.endpointPath, {
+                params: { ownerId: userId, ownerType: 'INDIVIDUAL', ...params },
+            });
+        } catch {
+            return { data: [] };
+        }
     }
 
     /**
@@ -76,10 +90,14 @@ export class AnalyticsApi extends BaseApi {
      * @param {string} userId - User identifier.
      * @returns {Promise<import('axios').AxiosResponse<Object>>} Saving goals response.
      */
-    getSavingGoals(userId) {
-        return this.#savingGoalsEndpoint.http.get(this.#savingGoalsEndpoint.endpointPath, {
-            params: { ownerId: userId, ownerType: 'INDIVIDUAL' },
-        });
+    async getSavingGoals(userId) {
+        try {
+            return await this.#savingGoalsEndpoint.http.get(this.#savingGoalsEndpoint.endpointPath, {
+                params: { ownerId: userId, ownerType: 'INDIVIDUAL' },
+            });
+        } catch {
+            return { data: {} };
+        }
     }
 
     /**

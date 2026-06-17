@@ -8,8 +8,8 @@ const route = useRoute()
 const { t } = useI18n()
 
 const navItems = [
-  { labelKey: 'nav.dashboard', icon: 'th-large',  path: '/dashboard' },
-  { labelKey: 'nav.reports',   icon: 'chart-bar', path: '/reports'   },
+  { labelKey: 'nav.dashboard', icon: 'th-large',  path: '/analytics/dashboard' },
+  { labelKey: 'nav.reports',   icon: 'chart-bar', path: '/analytics/reports'   },
 ]
 
 const activeIndex = computed(() => {

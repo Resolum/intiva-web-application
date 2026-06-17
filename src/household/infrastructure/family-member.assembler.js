@@ -34,6 +34,10 @@ export class FamilyMemberAssembler {
    * @returns {FamilyMember[]} Collection of mapped family member entities.
    */
   static toMemberList(rawList) {
-    return (Array.isArray(rawList) ? rawList : []).map(m => new FamilyMember(m))
+    console.log('[FamilyMemberAssembler] toMemberList input:', rawList)
+    return (Array.isArray(rawList) ? rawList : []).map(m => {
+      console.log('[FamilyMemberAssembler] raw member:', m)
+      return new FamilyMember(m)
+    })
   }
 }

@@ -75,47 +75,34 @@ export const useFamilyGroupStore = defineStore('family-group', () => {
    * @param {string} userId - User identifier.
    * @returns {Promise<void>}
    */
-  async function discoverAndLoad(userId) {
+  async function discoverAndLoad(userId, familyId) {
     if (!userId || hasGroup.value) return
 
     isLoading.value = true
     error.value = null
     try {
-      // Strategy 1: check invitations for accepted ones
-      let discovered = null
-      try {
-        const invResponse = await householdApi.getInvitations(userId)
-        const invData = invResponse.data
-        const list = Array.isArray(invData) ? invData : (invData?.content ?? invData?.items ?? [])
-        const accepted = list.find(
-          inv => (inv.status === 'ACCEPTED' || inv.status === 'accepted') &&
-                 (inv.familyId ?? inv.groupId ?? inv.family?.id)
-        )
-        if (accepted) {
-          discovered = String(accepted.familyId ?? accepted.groupId ?? accepted.family?.id)
-        }
-      } catch {
-        // invitations endpoint failed — continue to next strategy
+      if (familyId) {
+        await loadGroup(userId, String(familyId))
+        return
       }
 
-      // Strategy 2: probe recent group IDs (1-20) looking for one owned by this user
-      if (!discovered) {
-        const probeLimit = 20
-        for (let id = 1; id <= probeLimit; id++) {
-          try {
-            const response = await householdApi.getGroupFamilyById(userId, id)
-            if (response.data && String(response.data.ownerId) === String(userId)) {
-              discovered = String(response.data.id)
-              break
+      const { useAuthStore } = await import('@/iam/application/auth.store.js')
+      const authStore = useAuthStore()
+      try {
+        const invRes = await householdApi.getInvitations(userId)
+        console.log('[FamilyGroupStore] invitations response:', invRes.data)
+        if (Array.isArray(invRes.data)) {
+          const accepted = invRes.data.find(inv => inv.accepted || inv.status === 'ACCEPTED')
+          if (accepted) {
+            const fid = accepted.familyId ?? accepted.family?.id ?? null
+            if (fid) {
+              authStore.setFamilyId(String(fid))
+              await loadGroup(userId, String(fid))
+              return
             }
-          } catch {
-            // 404 or 403 — not this group, continue
           }
         }
-      }
-
-      if (discovered) {
-        await loadGroup(userId, discovered)
+      } catch {
       }
     } catch (err) {
       error.value = err

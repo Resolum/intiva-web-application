@@ -23,6 +23,10 @@ export class CommunicationApi extends BaseApi {
         super();
         this.addRequestInterceptor(authInterceptor);
         this.addResponseInterceptor(null, authErrorHandler);
+        const token = localStorage.getItem('auth_token');
+        if (token && token !== 'undefined') {
+            this.http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         this.#notificationDevicesEndpoint = new BaseEndpoint(this, notificationDevicesPath);
         this.#notificationsEndpoint = new BaseEndpoint(this, notificationsPath);
     }
