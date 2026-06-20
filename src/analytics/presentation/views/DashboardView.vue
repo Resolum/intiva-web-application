@@ -39,17 +39,16 @@ function activeRange() {
   return selectedPeriod.value
 }
 
-onMounted(() => dashboard.fetch(authStore.user?.id, buildParams()))
+onMounted(() => dashboard.fetch(authStore.user?.userId, buildParams()))
 
 watch(selectedPeriod, (val) => {
   if (val === 'Personalizado') return
-  dashboard.fetch(authStore.user?.id, buildParams())
+  dashboard.fetch(authStore.user?.userId, buildParams())
 })
-
 
 watch([customFrom, customTo], () => {
   if (!customFrom.value || !customTo.value) return
-  dashboard.fetch(authStore.user?.id, buildParams())
+  dashboard.fetch(authStore.user?.userId, buildParams())
 })
 
 function onLogout() {
