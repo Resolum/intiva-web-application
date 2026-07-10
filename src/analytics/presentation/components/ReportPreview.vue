@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js'
 import { useCountAnimation } from '@/composables/useCountAnimation.js'
+import { ReportType } from '@/analytics/domain/model/report.js'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
@@ -14,6 +15,7 @@ const props = defineProps({
   periodStart: { type: String, default: '' },
   periodEnd: { type: String, default: '' },
   generatedAt: { type: String, default: '' },
+  reportType: { type: String, default: ReportType.GENERAL },
 })
 
 const { t } = useI18n()
@@ -105,17 +107,17 @@ const formatDate = (value) => {
       <hr class="doc-divider" />
 
       <div class="summary-cards">
-        <div class="summary-card card-income" style="--flip-delay: 0s">
+        <div v-if="props.reportType === ReportType.GENERAL || props.reportType === ReportType.INCOME" class="summary-card card-income" style="--flip-delay: 0s">
           <i class="pi pi-arrow-up card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.totalIncome') }}</div>
           <div class="sum-value">{{ formatCurrency(animatedIncome) }}</div>
         </div>
-        <div class="summary-card card-expense" style="--flip-delay: 0.1s">
+        <div v-if="props.reportType === ReportType.GENERAL || props.reportType === ReportType.EXPENSES" class="summary-card card-expense" style="--flip-delay: 0.1s">
           <i class="pi pi-arrow-down card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.totalExpenses') }}</div>
           <div class="sum-value">{{ formatCurrency(animatedExpenses) }}</div>
         </div>
-        <div class="summary-card card-savings" style="--flip-delay: 0.2s">
+        <div v-if="props.reportType === ReportType.GENERAL || props.reportType === ReportType.SAVINGS" class="summary-card card-savings" style="--flip-delay: 0.2s">
           <i class="pi pi-star card-icon"></i>
           <div class="sum-label">{{ t('reports.preview.netSavings') }}</div>
           <div class="sum-value">{{ formatCurrency(animatedSavings) }}</div>
