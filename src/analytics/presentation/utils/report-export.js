@@ -1,3 +1,10 @@
+const ReportType = {
+  GENERAL: 'general',
+  INCOME: 'income',
+  EXPENSES: 'expenses',
+  SAVINGS: 'savings',
+}
+
 function formatCurrency(value) {
   const amount = Number(value ?? 0)
   return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -15,11 +22,13 @@ function escapeCsvValue(value) {
 export function exportToCSV(report = {}, filename = 'reporte') {
   const {
     title = 'Reporte',
+    reportType = ReportType.GENERAL,
     periodStart = '',
     periodEnd = '',
     members = [],
     summary = {},
     transactions = [],
+    chartData = [],
   } = report
 
   const rows = []
@@ -28,12 +37,31 @@ export function exportToCSV(report = {}, filename = 'reporte') {
   if (members.length > 0) {
     rows.push(['Miembros incluidos', members.join('; ')])
   }
-  if (summary.totalIncome !== undefined || summary.totalExpenses !== undefined || summary.netSavings !== undefined) {
+  if (reportType === ReportType.GENERAL || reportType === ReportType.INCOME) {
     rows.push(['Ingreso total', formatCurrency(summary.totalIncome)])
+  }
+  if (reportType === ReportType.GENERAL || reportType === ReportType.EXPENSES) {
     rows.push(['Gasto total', formatCurrency(summary.totalExpenses)])
+  }
+  if (reportType === ReportType.GENERAL || reportType === ReportType.SAVINGS) {
     rows.push(['Ahorro neto', formatCurrency(summary.netSavings)])
   }
+
+  if (chartData.length > 0) {
+    rows.push([])
+    rows.push(['Distribución de Gastos'])
+    rows.push(['Categoría', 'Monto', 'Porcentaje'])
+    chartData.forEach((item) => {
+      rows.push([
+        item.categoryKey || '',
+        formatCurrency(item.amount),
+        `${Number(item.percentage ?? 0).toFixed(1)}%`,
+      ])
+    })
+  }
+
   rows.push([])
+  rows.push(['Transacciones Principales'])
   rows.push(['Fecha', 'Descripción', 'Categoría', 'Monto'])
 
   transactions.forEach((transaction) => {
@@ -46,8 +74,8 @@ export function exportToCSV(report = {}, filename = 'reporte') {
   })
 
   const csvContent = rows
-    .map((row) => row.map(escapeCsvValue).join(','))
-    .join('\n')
+      .map((row) => row.map(escapeCsvValue).join(','))
+      .join('\n')
 
   const blob = new Blob(['\uFEFF' + csvContent], {
     type: 'text/csv;charset=utf-8;'
@@ -65,6 +93,7 @@ export function exportToCSV(report = {}, filename = 'reporte') {
 export async function exportToPDF(report = {}, filename = 'reporte') {
   const {
     title = 'Reporte',
+    reportType = ReportType.GENERAL,
     periodStart = '',
     periodEnd = '',
     members = [],
@@ -95,24 +124,34 @@ export async function exportToPDF(report = {}, filename = 'reporte') {
   }
   y += 4
 
-  pdf.setFont('helvetica', 'bold')
-  pdf.setFontSize(12)
-  pdf.text('Resumen financiero', margin, y)
-  y += 8
+  const showSummary =
+    reportType === ReportType.GENERAL ||
+    reportType === ReportType.INCOME ||
+    reportType === ReportType.EXPENSES ||
+    reportType === ReportType.SAVINGS
 
-  pdf.setFont('helvetica', 'normal')
-  pdf.setFontSize(10)
-  const summaryLines = [
-    [`Ingreso total`, formatCurrency(summary.totalIncome)],
-    [`Gasto total`, formatCurrency(summary.totalExpenses)],
-    [`Ahorro neto`, formatCurrency(summary.netSavings)],
-  ]
+  if (showSummary) {
+    pdf.setFont('helvetica', 'bold')
+    pdf.setFontSize(12)
+    pdf.text('Resumen financiero', margin, y)
+    y += 8
+    pdf.setFont('helvetica', 'normal')
+    pdf.setFontSize(10)
 
-  summaryLines.forEach(([label, value]) => {
-    pdf.text(`${label}: ${value}`, margin, y)
+    if (reportType === ReportType.GENERAL || reportType === ReportType.INCOME) {
+      pdf.text(`Ingreso total: ${formatCurrency(summary.totalIncome)}`, margin, y)
+      y += 6
+    }
+    if (reportType === ReportType.GENERAL || reportType === ReportType.EXPENSES) {
+      pdf.text(`Gasto total: ${formatCurrency(summary.totalExpenses)}`, margin, y)
+      y += 6
+    }
+    if (reportType === ReportType.GENERAL || reportType === ReportType.SAVINGS) {
+      pdf.text(`Ahorro neto: ${formatCurrency(summary.netSavings)}`, margin, y)
+      y += 6
+    }
     y += 6
-  })
-  y += 6
+  }
 
   pdf.setFont('helvetica', 'bold')
   pdf.text('Transacciones', margin, y)
