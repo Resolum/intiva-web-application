@@ -10,6 +10,7 @@ import AppLayout from '@/shared/presentation/components/AppLayout.vue'
 import ReportConfig from '@/analytics/presentation/components/ReportConfig.vue'
 import ReportPreview from '@/analytics/presentation/components/ReportPreview.vue'
 import { exportToCSV, exportToPDF } from '@/analytics/presentation/utils/report-export.js'
+import { ReportType } from '@/analytics/domain/model/report.js'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -19,7 +20,7 @@ const familyStore  = useFamilyGroupStore()
 
 const isLoading = ref(true)
 const isGenerating = ref(false)
-const reportConfigRef = ref(null)
+const hasError = ref(false)
 
 const currentConfig = ref(null)
 const previewMeta = ref({ periodStart: '', periodEnd: '', generatedAt: '' })
@@ -93,6 +94,9 @@ const fetchPreviewData = async (config) => {
     }
   } catch (error) {
     console.error(error)
+    if (!financialSummary.value) {
+      hasError.value = true
+    }
   } finally {
     isLoading.value = false
   }
@@ -104,6 +108,7 @@ const fetchPreviewData = async (config) => {
  */
 const onConfigChange = (newConfig) => {
   currentConfig.value = newConfig
+  hasError.value = false
   fetchPreviewData(newConfig)
 }
 
@@ -111,16 +116,18 @@ const onConfigChange = (newConfig) => {
  * Generates and exports the report in the selected format (CSV or PDF).
  */
 const onGenerate = async () => {
-  if (!currentConfig.value) return
+  if (!currentConfig.value || isGenerating.value) return
   isGenerating.value = true
   const format = currentConfig.value.format
   const exportPayload = {
     title: t('reports.preview.title'),
+    reportType: currentConfig.value.type,
     periodStart: currentConfig.value.startDate,
     periodEnd: currentConfig.value.endDate,
     members: currentConfig.value.memberIds,
     summary: financialSummary.value ?? {},
     transactions: transactions.value,
+    chartData: chartData.value,
   }
 
   try {
@@ -133,40 +140,43 @@ const onGenerate = async () => {
     console.error(error)
   } finally {
     isGenerating.value = false
-    reportConfigRef.value?.onGenerateDone()
   }
 }
 </script>
 
 <template>
   <AppLayout
-    :page-title="t('reports.title')"
-    :alert-count="0"
-    @logout="onLogout"
+      :page-title="t('reports.title')"
+      :alert-count="0"
+      @logout="onLogout"
   >
     <div class="reports-body">
       <div class="reports-layout">
         <div class="config-panel">
           <ReportConfig
-            ref="reportConfigRef"
-            :is-generating="isGenerating"
-            :family-id="authStore.familyId"
-            @update:config="onConfigChange"
-            @generate="onGenerate"
+              :is-generating="isGenerating"
+              :family-id="authStore.familyId"
+              :on-generate="onGenerate"
+              @update:config="onConfigChange"
           />
         </div>
         <div class="preview-panel">
           <div v-if="isLoading" class="loading-state">
             <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
           </div>
+          <div v-else-if="hasError" class="error-state">
+            <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: var(--color-danger, #e53935)"></i>
+            <p>{{ t('reports.errors.loadFailed') }}</p>
+          </div>
           <ReportPreview
-            v-else
-            :summary="financialSummary ?? { totalIncome: 0, totalExpenses: 0, netSavings: 0 }"
-            :transactions="transactions"
-            :chart-data="chartData"
-            :period-start="previewMeta.periodStart"
-            :period-end="previewMeta.periodEnd"
-            :generated-at="previewMeta.generatedAt"
+              v-else
+              :summary="financialSummary ?? { totalIncome: 0, totalExpenses: 0, netSavings: 0 }"
+              :transactions="transactions"
+              :chart-data="chartData"
+              :period-start="previewMeta.periodStart"
+              :period-end="previewMeta.periodEnd"
+              :generated-at="previewMeta.generatedAt"
+              :report-type="currentConfig?.type ?? ReportType.GENERAL"
           />
         </div>
       </div>
@@ -203,13 +213,25 @@ const onGenerate = async () => {
   overflow: hidden;
 }
 
-.loading-state {
+.loading-state,
+.error-state {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.75rem;
   color: var(--color-primary);
+}
+
+.error-state {
+  color: var(--color-danger, #e53935);
+}
+
+.error-state p {
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 1023px) {

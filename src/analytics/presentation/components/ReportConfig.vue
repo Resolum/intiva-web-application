@@ -12,9 +12,10 @@ const familyStore   = useFamilyGroupStore()
 const props = defineProps({
   isGenerating: { type: Boolean, default: false },
   familyId:     { type: [String, Number], default: null },
+  onGenerate:   { type: Function, default: null },
 })
 
-const emit = defineEmits(['update:config', 'generate'])
+const emit = defineEmits(['update:config'])
 
 // Default to current month
 function defaultStartDate() {
@@ -78,12 +79,20 @@ function isMemberSelected(id) {
 
 const generateDone = ref(false)
 
+watch(() => props.isGenerating, (now, prev) => {
+  if (prev === true && now === false) {
+    generateDone.value = true
+    setTimeout(() => { generateDone.value = false }, 1500)
+  }
+})
+
 watch(config, (newConfig) => {
   emit('update:config', { ...newConfig })
 }, { deep: true, immediate: true })
 
 const onGenerate = async () => {
-  if (config.memberIds.length === 0) {
+  if (props.isGenerating) return
+  if (config.memberIds.length === 0 && familyStore.hasGroup) {
     const btn = document.querySelector('.generate-btn')
     if (btn) {
       btn.classList.remove('shake')
@@ -94,12 +103,9 @@ const onGenerate = async () => {
     return
   }
   generateDone.value = false
-  emit('generate')
-}
-
-const onGenerateDone = () => {
-  generateDone.value = true
-  setTimeout(() => { generateDone.value = false }, 1500)
+  if (props.onGenerate) {
+    props.onGenerate({ ...config })
+  }
 }
 
 const typeIcons = {
@@ -154,7 +160,6 @@ function stringToHue(str) {
   return Math.abs(hash) % 360
 }
 
-defineExpose({ onGenerateDone })
 </script>
 
 <template>
